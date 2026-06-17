@@ -22,41 +22,62 @@ Must produce:
 - explanation
 - dashboard output
 
+**Achieved results (all 4 scenarios):**
+
+| Scenario | Top-1 RCA | Detection | Noise Reduction |
+|---|---|---|---|
+| S001 — Database Overload | Correct | Hit | 74.7% |
+| S002 — ETL Job Failure | Correct | Hit | 73.3% |
+| S003 — Data Quality Issue | Correct | Hit | 75.0% |
+| S004 — Analytics Service Crash | Correct | Hit | 73.3% |
+
 ---
 
 ## Project Structure
 
+```
 ai-observability-platform/
 ├── main.py
-
+├── requirements.txt
+│
 ├── scenarios/
 │   ├── scenarios.json
 │   └── ground_truth.json
-
+│
 ├── generator/
+│   ├── __init__.py
 │   └── log_generator.py
-
+│
 ├── rca/
+│   ├── __init__.py
 │   ├── dependency_graph.py
 │   ├── detector.py
 │   ├── clustering.py
 │   ├── engine.py
 │   └── explainer.py
-
+│
 ├── evaluation/
+│   ├── __init__.py
 │   ├── evaluate.py
 │   └── metrics.py
-
+│
 ├── dashboard/
+│   ├── __init__.py
 │   └── app.py
-
+│
 ├── data/
 │   ├── raw_logs/
 │   ├── processed_logs/
 │   └── incidents/
-
+│
 ├── configs/
 │   └── settings.yaml
+│
+└── docs/
+    └── phase1.md
+```
+
+> Note: `__init__.py` files are required in each package directory so Python can resolve imports correctly.
 
 ---
 
@@ -156,106 +177,183 @@ ai-observability-platform/
 
 ## Dependency Graph
 
+```
 database → metadata → etl → analytics → reporting
+```
 
 Edge means: "depends on"
+So `reporting → analytics` means reporting depends on analytics.
+
+In NetworkX, edges are stored as `dependent → dependency`. Failures propagate in the reverse direction: if `database` fails, `metadata` fails, then `etl`, then `analytics`, then `reporting`.
 
 ---
 
 ## Log Generator
 
 Deterministic behavior:
-- same scenario → same logs
-- inject root cause first
-- propagate downstream failures
+- same scenario → same logs (controlled by `seed: 42` in settings.yaml)
+- inject root cause errors first
+- propagate downstream failures in dependency order
+- normal INFO logs generated for all services first as background noise
+
+Log entry structure:
+```json
+{
+  "timestamp": "2025-01-15T09:00:00",
+  "service": "database",
+  "level": "ERROR",
+  "message": "Connection pool exhausted: 0 connections available",
+  "scenario_id": "S001"
+}
+```
 
 ---
 
 ## Incident Detection
 
 Simple rule-based:
-- spike in ERROR logs
-- per-service threshold breach
+- count ERROR logs per service across all logs
+- flag any service exceeding `error_threshold` (default: 5)
+
+> **Important:** Do NOT use a sliding tail window. Errors are injected in root-cause-first order,
+> so a tail window will miss the originating service — it fires first and exits the window before
+> downstream errors appear. Count across all logs instead.
 
 ---
 
 ## Clustering
 
 Use:
-- TF-IDF
-- cosine similarity
+- TF-IDF (max 500 features)
+- cosine similarity threshold (default: 0.3)
 
-(No embeddings in Phase 1)
+Algorithm: **greedy single-pass**
+1. Vectorise all ERROR log messages with TF-IDF
+2. For each log, compare cosine similarity against all existing cluster centroids
+3. If best match >= threshold → assign to that cluster, update centroid
+4. Otherwise → start a new cluster
+
+(No embeddings or HDBSCAN in Phase 1)
 
 ---
 
-## Root Cause Analysis (FINAL)
+## Root Cause Analysis (CORRECTED)
 
-Rule:
-Root cause = node with MAX upstream influence
+Rule: Root cause = service with the most downstream incident services it explains
 
 ```python
 import networkx as nx
 
 def find_root_cause(incident_services, graph):
-    reversed_graph = graph.reverse()
+    # reverse: edges now point in failure propagation direction
+    propagation_graph = graph.reverse()
     scores = {}
 
     for service in incident_services:
-        upstream = nx.descendants(reversed_graph, service)
-
-        for node in upstream:
-            if node in incident_services:
-                scores[node] = scores.get(node, 0) + 1
+        downstream = nx.descendants(propagation_graph, service)
+        scores[service] = sum(1 for node in downstream if node in incident_services)
 
     if not scores:
-        return incident_services[0]
+        return [{"service": incident_services[0], "score": 0, "confidence": 1.0}]
 
-    return max(scores, key=scores.get)
+    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    top3 = ranked[:3]
+    max_score = top3[0][1] if top3[0][1] > 0 else 1
+
+    return [
+        {"service": svc, "score": score, "confidence": round(score / max_score, 3)}
+        for svc, score in top3
+    ]
+```
+
+> **Bug in original pseudocode:** The original version incremented scores for downstream *victim*
+> nodes rather than the *origin* node. This caused the last service in the chain (`reporting`) to
+> rank #1 instead of the true root cause. The fix above scores each candidate by how many
+> downstream failures it explains.
+
+**S001 score trace:**
+```
+database  → 4 downstream victims → confidence 1.00  ← correctly identified
+metadata  → 3 downstream victims → confidence 0.75
+etl       → 2 downstream victims → confidence 0.50
+analytics → 1 downstream victim  → confidence 0.25
+reporting → 0 downstream victims → confidence 0.00
 ```
 
 ---
 
 ## Explanation Layer
 
-Input:
-- root cause
-- affected services
-- logs summary
+Template-based (no LLM in Phase 1).
 
-Output:
-Human-readable incident explanation
+Input:
+- root cause service
+- affected services
+- sample error logs (up to 5)
+- failure type
+
+Output sections:
+- Incident summary (root cause, failure type, affected services)
+- What happened (narrative sentence)
+- Evidence (sample log messages)
+- Recommended remediation (3 steps, service-specific)
 
 ---
 
 ## Dashboard
 
-Streamlit app showing:
-- logs
-- incidents
-- root cause
-- explanation
+Streamlit app. Uses session state — results only appear after the button is clicked (not on page load).
 
-Run:
+```bash
 streamlit run dashboard/app.py
+```
+
+Shows:
+- Scenario info in sidebar before running
+- Spinner + success message on pipeline execution
+- Summary metric cards (total logs, errors, clusters, affected services)
+- Top-3 RCA candidates with confidence
+- Ground truth match indicator
+- Incident explanation
+- Cluster table with noise reduction summary
+- Log stream with level filter
 
 ---
 
 ## Build Order
 
-1. scenarios.json
-2. ground_truth.json
-3. configs/settings.yaml
-4. dependency_graph.py
-5. log_generator.py
-6. detector.py
-7. clustering.py
-8. engine.py
-9. explainer.py
-10. evaluation/metrics.py
-11. evaluation/evaluate.py
-12. main.py
-13. dashboard
+1. `scenarios/scenarios.json`
+2. `scenarios/ground_truth.json`
+3. `configs/settings.yaml`
+4. `rca/dependency_graph.py`
+5. `generator/log_generator.py`
+6. `rca/detector.py`
+7. `rca/clustering.py`
+8. `rca/engine.py`
+9. `rca/explainer.py`
+10. `evaluation/metrics.py`
+11. `evaluation/evaluate.py`
+12. `main.py`
+13. `dashboard/app.py`
+14. `requirements.txt`
+15. `__init__.py` in each package directory
+
+---
+
+## Dependencies
+
+```
+networkx>=3.0
+scikit-learn>=1.3
+pyyaml>=6.0
+streamlit>=1.35
+pandas>=2.0
+```
+
+Install:
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
@@ -277,3 +375,9 @@ Phase 1 is NOT production.
 
 It is:
 "prove deterministic failure → detection → RCA → explanation"
+
+Complexity is added in Phase 2 and beyond. Every component here has a direct upgrade path:
+- TF-IDF → Sentence Transformers
+- greedy clustering → HDBSCAN
+- template explainer → RAG + LLM
+- batch logs → Kafka streaming
