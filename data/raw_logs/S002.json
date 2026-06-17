@@ -1,0 +1,1017 @@
+[
+  {
+    "timestamp": "2025-01-15T09:00:00",
+    "service": "database",
+    "level": "INFO",
+    "message": "Query executed successfully in 509ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:01",
+    "service": "database",
+    "level": "INFO",
+    "message": "Transaction committed successfully",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:02",
+    "service": "database",
+    "level": "INFO",
+    "message": "Transaction committed successfully",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:03",
+    "service": "database",
+    "level": "INFO",
+    "message": "Connection established from metadata",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:04",
+    "service": "database",
+    "level": "INFO",
+    "message": "Transaction committed successfully",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:05",
+    "service": "database",
+    "level": "INFO",
+    "message": "Connection established from metadata",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:06",
+    "service": "database",
+    "level": "INFO",
+    "message": "Transaction committed successfully",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:07",
+    "service": "database",
+    "level": "INFO",
+    "message": "Checkpoint written to disk",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:08",
+    "service": "database",
+    "level": "INFO",
+    "message": "Connection established from etl",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:09",
+    "service": "database",
+    "level": "INFO",
+    "message": "Transaction committed successfully",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:10",
+    "service": "database",
+    "level": "INFO",
+    "message": "Checkpoint written to disk",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:11",
+    "service": "database",
+    "level": "INFO",
+    "message": "Connection established from analytics",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:12",
+    "service": "database",
+    "level": "INFO",
+    "message": "Query executed successfully in 8897ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:13",
+    "service": "database",
+    "level": "INFO",
+    "message": "Connection established from metadata",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:14",
+    "service": "database",
+    "level": "INFO",
+    "message": "Checkpoint written to disk",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:15",
+    "service": "database",
+    "level": "INFO",
+    "message": "Connection established from metadata",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:16",
+    "service": "database",
+    "level": "INFO",
+    "message": "Checkpoint written to disk",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:17",
+    "service": "database",
+    "level": "INFO",
+    "message": "Index scan completed on table metrics",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:18",
+    "service": "database",
+    "level": "INFO",
+    "message": "Connection established from metadata",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:19",
+    "service": "database",
+    "level": "INFO",
+    "message": "Query executed successfully in 8523ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:20",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata record updated for ds_007",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:21",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Schema validation passed for dataset ds_047",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:22",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata record updated for ds_030",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:23",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Schema validation passed for dataset ds_027",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:24",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Schema validation passed for dataset ds_019",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:25",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Cache refreshed for schema registry",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:26",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata record updated for ds_012",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:27",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata sync completed in 4133ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:28",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Cache refreshed for schema registry",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:29",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Schema validation passed for dataset ds_005",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:30",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata record updated for ds_029",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:31",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata sync completed in 5005ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:32",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Cache refreshed for schema registry",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:33",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Schema validation passed for dataset ds_018",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:34",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Lineage graph updated",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:35",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Cache refreshed for schema registry",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:36",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata record updated for ds_040",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:37",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Schema validation passed for dataset ds_027",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:38",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Schema validation passed for dataset ds_015",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:39",
+    "service": "metadata",
+    "level": "INFO",
+    "message": "Metadata record updated for ds_005",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:40",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Transformation step completed for ds_012",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:41",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Transformation step completed for ds_025",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:42",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Data loaded into staging in 3328ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:43",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Transformation step completed for ds_045",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:44",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Data loaded into staging in 9424ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:45",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Data loaded into staging in 5379ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:46",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Data loaded into staging in 5591ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:47",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Batch 162 processed: 302817 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:48",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Batch 198 processed: 465238 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:49",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Data loaded into staging in 7711ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:50",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Transformation step completed for ds_036",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:51",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Transformation step completed for ds_018",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:52",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Transformation step completed for ds_010",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:53",
+    "service": "etl",
+    "level": "INFO",
+    "message": "ETL job job_163 finished successfully",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:54",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Data loaded into staging in 6332ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:55",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Batch 8 processed: 204873 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:56",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Batch 170 processed: 15209 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:57",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Batch 117 processed: 172361 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:58",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Transformation step completed for ds_048",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:00:59",
+    "service": "etl",
+    "level": "INFO",
+    "message": "Batch 122 processed: 351989 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:00",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Analytics pipeline started for ds_050",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:01",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Dashboard cache refreshed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:02",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Dashboard cache refreshed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:03",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Aggregation query completed in 6982ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:04",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Dashboard cache refreshed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:05",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Analytics pipeline started for ds_037",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:06",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Report rpt_77 generated successfully",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:07",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Dashboard cache refreshed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:08",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Model scoring completed: 128561 records",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:09",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Dashboard cache refreshed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:10",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Analytics pipeline started for ds_021",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:11",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Model scoring completed: 156318 records",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:12",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Aggregation query completed in 8851ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:13",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Aggregation query completed in 9505ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:14",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Aggregation query completed in 6665ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:15",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Aggregation query completed in 4166ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:16",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Analytics pipeline started for ds_037",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:17",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Analytics pipeline started for ds_012",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:18",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Model scoring completed: 369567 records",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:19",
+    "service": "analytics",
+    "level": "INFO",
+    "message": "Dashboard cache refreshed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:20",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Scheduled report triggered",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:21",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report subscription processed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:22",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report rpt_06 delivered to user_06",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:23",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "PDF rendered in 4657ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:24",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Export completed: 152109 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:25",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "PDF rendered in 1542ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:26",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "PDF rendered in 988ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:27",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report subscription processed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:28",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Export completed: 242931 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:29",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report subscription processed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:30",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report subscription processed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:31",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Export completed: 254934 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:32",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "PDF rendered in 7560ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:33",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "PDF rendered in 6346ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:34",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report rpt_84 delivered to user_05",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:35",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Export completed: 447872 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:36",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "PDF rendered in 8964ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:37",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report rpt_42 delivered to user_02",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:38",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Export completed: 358459 rows",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:39",
+    "service": "reporting",
+    "level": "INFO",
+    "message": "Report subscription processed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:40",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "ETL job job_552 crashed unexpectedly",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:41",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Null pointer in pipeline at step 5",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:42",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "ETL job job_985 crashed unexpectedly",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:43",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Null pointer in pipeline at step 2",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:44",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Null pointer in pipeline at step 7",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:45",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Data transformation error on batch 70",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:46",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Null pointer in pipeline at step 9",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:47",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "ETL job job_226 crashed unexpectedly",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:48",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Null pointer in pipeline at step 10",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:49",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "ETL job job_518 crashed unexpectedly",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:50",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "ETL job job_564 crashed unexpectedly",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:51",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Data transformation error on batch 105",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:52",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "ETL failed to fetch metadata for ds_007",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:53",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Null pointer in pipeline at step 1",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:54",
+    "service": "etl",
+    "level": "ERROR",
+    "message": "Null pointer in pipeline at step 4",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:55",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Analytics service terminated unexpectedly",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:56",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Out of memory error during aggregation",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:57",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Failed to read ETL output for ds_031",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:58",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Query timeout after 3729ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:01:59",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Failed to read ETL output for ds_032",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:00",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Out of memory error during aggregation",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:01",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Out of memory error during aggregation",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:02",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Out of memory error during aggregation",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:03",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Out of memory error during aggregation",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:04",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Query timeout after 9302ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:05",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Query timeout after 5219ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:06",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Analytics service terminated unexpectedly",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:07",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Query timeout after 530ms",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:08",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Out of memory error during aggregation",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:09",
+    "service": "analytics",
+    "level": "ERROR",
+    "message": "Failed to read ETL output for ds_011",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:10",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report rpt_85 generation failed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:11",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report delivery timeout for user_04",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:12",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report delivery timeout for user_01",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:13",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Analytics data unavailable for report rpt_96",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:14",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report delivery timeout for user_03",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:15",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report delivery timeout for user_14",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:16",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report delivery timeout for user_03",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:17",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Analytics data unavailable for report rpt_40",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:18",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Analytics data unavailable for report rpt_45",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:19",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report rpt_98 generation failed",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:20",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report delivery timeout for user_11",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:21",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Report delivery timeout for user_12",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:22",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Export failed: upstream data missing",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:23",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Scheduled report rpt_25 aborted",
+    "scenario_id": "S002"
+  },
+  {
+    "timestamp": "2025-01-15T09:02:24",
+    "service": "reporting",
+    "level": "ERROR",
+    "message": "Scheduled report rpt_11 aborted",
+    "scenario_id": "S002"
+  }
+]

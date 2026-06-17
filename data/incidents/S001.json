@@ -1,0 +1,218 @@
+{
+  "scenario_id": "S001",
+  "scenario_name": "Database Overload",
+  "logs_generated": 175,
+  "incidents": [
+    {
+      "service": "database",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:54"
+    },
+    {
+      "service": "metadata",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:54"
+    },
+    {
+      "service": "etl",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:54"
+    },
+    {
+      "service": "analytics",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:54"
+    },
+    {
+      "service": "reporting",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:54"
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": 0,
+      "size": 8,
+      "services": [
+        "database",
+        "analytics"
+      ],
+      "summary": "DB connection timeout after 7722ms"
+    },
+    {
+      "cluster_id": 1,
+      "size": 7,
+      "services": [
+        "database"
+      ],
+      "summary": "Connection pool exhausted: 0 connections available"
+    },
+    {
+      "cluster_id": 2,
+      "size": 2,
+      "services": [
+        "database"
+      ],
+      "summary": "Query latency high: 2265ms exceeds threshold"
+    },
+    {
+      "cluster_id": 3,
+      "size": 1,
+      "services": [
+        "database"
+      ],
+      "summary": "Transaction rolled back due to deadlock"
+    },
+    {
+      "cluster_id": 4,
+      "size": 2,
+      "services": [
+        "metadata"
+      ],
+      "summary": "Missing required fields in schema for ds_018"
+    },
+    {
+      "cluster_id": 5,
+      "size": 6,
+      "services": [
+        "metadata"
+      ],
+      "summary": "Schema mismatch detected for dataset ds_016"
+    },
+    {
+      "cluster_id": 6,
+      "size": 10,
+      "services": [
+        "etl",
+        "metadata"
+      ],
+      "summary": "Metadata service failed to reach database"
+    },
+    {
+      "cluster_id": 7,
+      "size": 4,
+      "services": [
+        "metadata"
+      ],
+      "summary": "Cache invalidation failed"
+    },
+    {
+      "cluster_id": 8,
+      "size": 2,
+      "services": [
+        "etl"
+      ],
+      "summary": "ETL job job_183 crashed unexpectedly"
+    },
+    {
+      "cluster_id": 9,
+      "size": 3,
+      "services": [
+        "etl"
+      ],
+      "summary": "Data transformation error on batch 2"
+    },
+    {
+      "cluster_id": 10,
+      "size": 1,
+      "services": [
+        "etl"
+      ],
+      "summary": "Null pointer in pipeline at step 10"
+    },
+    {
+      "cluster_id": 11,
+      "size": 2,
+      "services": [
+        "etl"
+      ],
+      "summary": "Batch 147 aborted after 4 retries"
+    },
+    {
+      "cluster_id": 12,
+      "size": 3,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Segmentation fault in analytics worker"
+    },
+    {
+      "cluster_id": 13,
+      "size": 3,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Analytics service terminated unexpectedly"
+    },
+    {
+      "cluster_id": 14,
+      "size": 6,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Out of memory error during aggregation"
+    },
+    {
+      "cluster_id": 15,
+      "size": 6,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report delivery timeout for user_17"
+    },
+    {
+      "cluster_id": 16,
+      "size": 2,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Analytics data unavailable for report rpt_54"
+    },
+    {
+      "cluster_id": 17,
+      "size": 3,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Export failed: upstream data missing"
+    },
+    {
+      "cluster_id": 18,
+      "size": 4,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report rpt_14 generation failed"
+    }
+  ],
+  "rca_candidates": [
+    {
+      "service": "database",
+      "score": 4,
+      "confidence": 1.0
+    },
+    {
+      "service": "metadata",
+      "score": 3,
+      "confidence": 0.75
+    },
+    {
+      "service": "etl",
+      "score": 2,
+      "confidence": 0.5
+    }
+  ],
+  "root_cause": "database",
+  "explanation": "INCIDENT SUMMARY\n================\nRoot Cause Service : database\nFailure Type       : resource exhaustion\nAffected Services  : metadata, etl, analytics, reporting\n\nWHAT HAPPENED\n-------------\nThe database service experienced resource exhaustion. Because downstream services\ndepend on database, failures cascaded to: metadata, etl, analytics, reporting.\n\nEVIDENCE (sample log messages)\n-------------------------------\n  [database] DB connection timeout after 7722ms\n  [database] Connection pool exhausted: 0 connections available\n  [database] DB connection timeout after 6584ms\n  [database] Connection pool exhausted: 0 connections available\n  [database] Connection pool exhausted: 0 connections available\n\nRECOMMENDED REMEDIATION\n------------------------\n  1. Scale up database connection pool limits.\n  2. Identify and kill long-running queries.\n  3. Check disk I/O utilisation and consider read replicas.",
+  "evaluation": {
+    "scenario_id": "S001",
+    "rca_top1_correct": true,
+    "rca_top3_correct": true,
+    "detection_hit": true,
+    "total_error_logs": 75,
+    "num_clusters": 19,
+    "noise_reduction": 0.7467,
+    "predicted_root_cause": "database",
+    "expected_root_cause": "database"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "scenario_id": "S002",
+  "scenario_name": "ETL Job Failure",
+  "logs_generated": 145,
+  "incidents": [
+    {
+      "service": "etl",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:24"
+    },
+    {
+      "service": "analytics",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:24"
+    },
+    {
+      "service": "reporting",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:24"
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": 0,
+      "size": 5,
+      "services": [
+        "etl"
+      ],
+      "summary": "ETL job job_552 crashed unexpectedly"
+    },
+    {
+      "cluster_id": 1,
+      "size": 7,
+      "services": [
+        "etl"
+      ],
+      "summary": "Null pointer in pipeline at step 5"
+    },
+    {
+      "cluster_id": 2,
+      "size": 2,
+      "services": [
+        "etl"
+      ],
+      "summary": "Data transformation error on batch 70"
+    },
+    {
+      "cluster_id": 3,
+      "size": 4,
+      "services": [
+        "analytics",
+        "etl"
+      ],
+      "summary": "ETL failed to fetch metadata for ds_007"
+    },
+    {
+      "cluster_id": 4,
+      "size": 2,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Analytics service terminated unexpectedly"
+    },
+    {
+      "cluster_id": 5,
+      "size": 6,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Out of memory error during aggregation"
+    },
+    {
+      "cluster_id": 6,
+      "size": 4,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Query timeout after 3729ms"
+    },
+    {
+      "cluster_id": 7,
+      "size": 2,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report rpt_85 generation failed"
+    },
+    {
+      "cluster_id": 8,
+      "size": 7,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report delivery timeout for user_04"
+    },
+    {
+      "cluster_id": 9,
+      "size": 3,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Analytics data unavailable for report rpt_96"
+    },
+    {
+      "cluster_id": 10,
+      "size": 1,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Export failed: upstream data missing"
+    },
+    {
+      "cluster_id": 11,
+      "size": 2,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Scheduled report rpt_25 aborted"
+    }
+  ],
+  "rca_candidates": [
+    {
+      "service": "etl",
+      "score": 2,
+      "confidence": 1.0
+    },
+    {
+      "service": "analytics",
+      "score": 1,
+      "confidence": 0.5
+    },
+    {
+      "service": "reporting",
+      "score": 0,
+      "confidence": 0.0
+    }
+  ],
+  "root_cause": "etl",
+  "explanation": "INCIDENT SUMMARY\n================\nRoot Cause Service : etl\nFailure Type       : a job failure\nAffected Services  : analytics, reporting\n\nWHAT HAPPENED\n-------------\nThe etl service experienced a job failure. Because downstream services\ndepend on etl, failures cascaded to: analytics, reporting.\n\nEVIDENCE (sample log messages)\n-------------------------------\n  [etl] ETL job job_552 crashed unexpectedly\n  [etl] Null pointer in pipeline at step 5\n  [etl] ETL job job_985 crashed unexpectedly\n  [etl] Null pointer in pipeline at step 2\n  [etl] Null pointer in pipeline at step 7\n\nRECOMMENDED REMEDIATION\n------------------------\n  1. Review ETL job logs for the failing transformation step.\n  2. Re-run the failed batch with corrected input data.\n  3. Ensure metadata service is healthy before restarting ETL.",
+  "evaluation": {
+    "scenario_id": "S002",
+    "rca_top1_correct": true,
+    "rca_top3_correct": true,
+    "detection_hit": true,
+    "total_error_logs": 45,
+    "num_clusters": 12,
+    "noise_reduction": 0.7333,
+    "predicted_root_cause": "etl",
+    "expected_root_cause": "etl"
+  }
+}

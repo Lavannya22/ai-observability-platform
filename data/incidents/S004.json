@@ -1,0 +1,108 @@
+{
+  "scenario_id": "S004",
+  "scenario_name": "Analytics Service Crash",
+  "logs_generated": 130,
+  "incidents": [
+    {
+      "service": "analytics",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:09"
+    },
+    {
+      "service": "reporting",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:09"
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": 0,
+      "size": 5,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Out of memory error during aggregation"
+    },
+    {
+      "cluster_id": 1,
+      "size": 7,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Analytics service terminated unexpectedly"
+    },
+    {
+      "cluster_id": 2,
+      "size": 2,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Segmentation fault in analytics worker"
+    },
+    {
+      "cluster_id": 3,
+      "size": 1,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Failed to read ETL output for ds_007"
+    },
+    {
+      "cluster_id": 4,
+      "size": 2,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Export failed: upstream data missing"
+    },
+    {
+      "cluster_id": 5,
+      "size": 6,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report rpt_23 generation failed"
+    },
+    {
+      "cluster_id": 6,
+      "size": 3,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report delivery timeout for user_19"
+    },
+    {
+      "cluster_id": 7,
+      "size": 4,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Scheduled report rpt_39 aborted"
+    }
+  ],
+  "rca_candidates": [
+    {
+      "service": "analytics",
+      "score": 1,
+      "confidence": 1.0
+    },
+    {
+      "service": "reporting",
+      "score": 0,
+      "confidence": 0.0
+    }
+  ],
+  "root_cause": "analytics",
+  "explanation": "INCIDENT SUMMARY\n================\nRoot Cause Service : analytics\nFailure Type       : a service crash\nAffected Services  : reporting\n\nWHAT HAPPENED\n-------------\nThe analytics service experienced a service crash. Because downstream services\ndepend on analytics, failures cascaded to: reporting.\n\nEVIDENCE (sample log messages)\n-------------------------------\n  [analytics] Out of memory error during aggregation\n  [analytics] Analytics service terminated unexpectedly\n  [analytics] Out of memory error during aggregation\n  [analytics] Analytics service terminated unexpectedly\n  [analytics] Analytics service terminated unexpectedly\n\nRECOMMENDED REMEDIATION\n------------------------\n  1. Increase memory allocation for the analytics worker.\n  2. Check for unbounded aggregation queries causing OOM.\n  3. Restart the analytics service and monitor memory usage.",
+  "evaluation": {
+    "scenario_id": "S004",
+    "rca_top1_correct": true,
+    "rca_top3_correct": true,
+    "detection_hit": true,
+    "total_error_logs": 30,
+    "num_clusters": 8,
+    "noise_reduction": 0.7333,
+    "predicted_root_cause": "analytics",
+    "expected_root_cause": "analytics"
+  }
+}

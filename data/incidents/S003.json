@@ -1,0 +1,181 @@
+{
+  "scenario_id": "S003",
+  "scenario_name": "Data Quality Issue",
+  "logs_generated": 160,
+  "incidents": [
+    {
+      "service": "metadata",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:39"
+    },
+    {
+      "service": "etl",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:39"
+    },
+    {
+      "service": "analytics",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:39"
+    },
+    {
+      "service": "reporting",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:02:39"
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": 0,
+      "size": 5,
+      "services": [
+        "metadata"
+      ],
+      "summary": "Schema mismatch detected for dataset ds_005"
+    },
+    {
+      "cluster_id": 1,
+      "size": 7,
+      "services": [
+        "metadata"
+      ],
+      "summary": "Missing required fields in schema for ds_007"
+    },
+    {
+      "cluster_id": 2,
+      "size": 2,
+      "services": [
+        "metadata"
+      ],
+      "summary": "Invalid data format in metadata record ds_034"
+    },
+    {
+      "cluster_id": 3,
+      "size": 11,
+      "services": [
+        "etl",
+        "metadata",
+        "analytics"
+      ],
+      "summary": "Metadata service failed to reach database"
+    },
+    {
+      "cluster_id": 4,
+      "size": 2,
+      "services": [
+        "etl"
+      ],
+      "summary": "Null pointer in pipeline at step 3"
+    },
+    {
+      "cluster_id": 5,
+      "size": 6,
+      "services": [
+        "etl"
+      ],
+      "summary": "ETL job job_702 crashed unexpectedly"
+    },
+    {
+      "cluster_id": 6,
+      "size": 4,
+      "services": [
+        "etl"
+      ],
+      "summary": "Batch 169 aborted after 1 retries"
+    },
+    {
+      "cluster_id": 7,
+      "size": 2,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Out of memory error during aggregation"
+    },
+    {
+      "cluster_id": 8,
+      "size": 3,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Segmentation fault in analytics worker"
+    },
+    {
+      "cluster_id": 9,
+      "size": 1,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Analytics service terminated unexpectedly"
+    },
+    {
+      "cluster_id": 10,
+      "size": 2,
+      "services": [
+        "analytics"
+      ],
+      "summary": "Query timeout after 6399ms"
+    },
+    {
+      "cluster_id": 11,
+      "size": 3,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Analytics data unavailable for report rpt_53"
+    },
+    {
+      "cluster_id": 12,
+      "size": 3,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Export failed: upstream data missing"
+    },
+    {
+      "cluster_id": 13,
+      "size": 6,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report rpt_85 generation failed"
+    },
+    {
+      "cluster_id": 14,
+      "size": 3,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Scheduled report rpt_99 aborted"
+    }
+  ],
+  "rca_candidates": [
+    {
+      "service": "metadata",
+      "score": 3,
+      "confidence": 1.0
+    },
+    {
+      "service": "etl",
+      "score": 2,
+      "confidence": 0.667
+    },
+    {
+      "service": "analytics",
+      "score": 1,
+      "confidence": 0.333
+    }
+  ],
+  "root_cause": "metadata",
+  "explanation": "INCIDENT SUMMARY\n================\nRoot Cause Service : metadata\nFailure Type       : data corruption\nAffected Services  : etl, analytics, reporting\n\nWHAT HAPPENED\n-------------\nThe metadata service experienced data corruption. Because downstream services\ndepend on metadata, failures cascaded to: etl, analytics, reporting.\n\nEVIDENCE (sample log messages)\n-------------------------------\n  [metadata] Schema mismatch detected for dataset ds_005\n  [metadata] Missing required fields in schema for ds_007\n  [metadata] Schema mismatch detected for dataset ds_037\n  [metadata] Missing required fields in schema for ds_015\n  [metadata] Missing required fields in schema for ds_047\n\nRECOMMENDED REMEDIATION\n------------------------\n  1. Validate schema registry for recent changes.\n  2. Re-run metadata sync job to restore consistency.\n  3. Check database connectivity from the metadata service.",
+  "evaluation": {
+    "scenario_id": "S003",
+    "rca_top1_correct": true,
+    "rca_top3_correct": true,
+    "detection_hit": true,
+    "total_error_logs": 60,
+    "num_clusters": 15,
+    "noise_reduction": 0.75,
+    "predicted_root_cause": "metadata",
+    "expected_root_cause": "metadata"
+  }
+}

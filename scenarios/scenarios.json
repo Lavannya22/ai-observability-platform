@@ -1,0 +1,50 @@
+[
+  {
+    "scenario_id": "S001",
+    "name": "Database Overload",
+    "failure_type": "resource_exhaustion",
+    "root_cause_service": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "log_signatures": [
+      "DB connection timeout",
+      "query latency high",
+      "connection pool exhausted"
+    ]
+  },
+  {
+    "scenario_id": "S002",
+    "name": "ETL Job Failure",
+    "failure_type": "job_failure",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "log_signatures": [
+      "ETL job crashed",
+      "data transformation error",
+      "null pointer in pipeline"
+    ]
+  },
+  {
+    "scenario_id": "S003",
+    "name": "Data Quality Issue",
+    "failure_type": "data_corruption",
+    "root_cause_service": "metadata",
+    "affected_services": ["etl", "analytics", "reporting"],
+    "log_signatures": [
+      "schema mismatch detected",
+      "invalid data format",
+      "missing required fields"
+    ]
+  },
+  {
+    "scenario_id": "S004",
+    "name": "Analytics Service Crash",
+    "failure_type": "service_crash",
+    "root_cause_service": "analytics",
+    "affected_services": ["reporting"],
+    "log_signatures": [
+      "out of memory error",
+      "segmentation fault",
+      "analytics service terminated unexpectedly"
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "scenario_id": "S001",
+    "root_cause_service": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "expected_rca_rank": 1
+  },
+  {
+    "scenario_id": "S002",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "expected_rca_rank": 1
+  },
+  {
+    "scenario_id": "S003",
+    "root_cause_service": "metadata",
+    "affected_services": ["etl", "analytics", "reporting"],
+    "expected_rca_rank": 1
+  },
+  {
+    "scenario_id": "S004",
+    "root_cause_service": "analytics",
+    "affected_services": ["reporting"],
+    "expected_rca_rank": 1
+  }
+]
