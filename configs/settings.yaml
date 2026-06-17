@@ -37,3 +37,18 @@ clustering:
 
 evaluation:
   top_k: 3                   # evaluate RCA accuracy at rank k
+
+kafka:
+  topic: logs
+  bootstrap_servers: localhost:29092
+
+postgres:
+  host: localhost
+  port: 5432
+  database: observability
+  user: trading
+  password: trading
+
+incident:
+  timeout_seconds: 600
+  merge_window_minutes: 10

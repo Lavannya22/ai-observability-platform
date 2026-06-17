@@ -41,117 +41,263 @@ def run_pipeline(scenario: dict):
     return logs, incidents, clusters, rca_candidates, root_cause, explanation
 
 
+def try_import_storage():
+    """Return repository module if PostgreSQL deps are available, else None."""
+    try:
+        from storage import repository
+        return repository
+    except ImportError:
+        return None
+
+
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(page_title="AI Observability Platform", layout="wide")
 st.title("AI Observability Platform")
-st.caption("Phase 1 MVP — Deterministic Incident Intelligence Pipeline")
+st.caption("Phase 1 + Phase 2 — Incident Intelligence Pipeline")
 
 scenarios = load_scenarios()
+tab1, tab2 = st.tabs(["Deterministic Analysis (Phase 1)", "Live Incidents (Phase 2)"])
 
-# ── Sidebar ───────────────────────────────────────────────────────────────────
-st.sidebar.header("Controls")
-scenario_id = st.sidebar.selectbox(
-    "Select Scenario",
-    options=list(scenarios.keys()),
-    format_func=lambda sid: f"{sid} — {scenarios[sid]['name']}",
-)
-scenario = scenarios[scenario_id]
 
-st.sidebar.markdown("**Scenario Info**")
-st.sidebar.markdown(f"- **Type:** {scenario['failure_type']}")
-st.sidebar.markdown(f"- **Root Cause:** `{scenario['root_cause_service']}`")
-st.sidebar.markdown(f"- **Affected:** {', '.join(scenario['affected_services'])}")
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 1 — Phase 1 deterministic pipeline
+# ═══════════════════════════════════════════════════════════════════════════════
+with tab1:
+    col_sidebar, col_main = st.columns([1, 3])
 
-run_clicked = st.sidebar.button("Run Pipeline", type="primary", use_container_width=True)
+    with col_sidebar:
+        st.markdown("### Controls")
+        scenario_id = st.selectbox(
+            "Select Scenario",
+            options=list(scenarios.keys()),
+            format_func=lambda sid: f"{sid} — {scenarios[sid]['name']}",
+            key="p1_scenario",
+        )
+        scenario = scenarios[scenario_id]
 
-# ── Session state ─────────────────────────────────────────────────────────────
-if "results" not in st.session_state:
-    st.session_state.results = None
-    st.session_state.ran_scenario = None
+        st.markdown("**Scenario Info**")
+        st.markdown(f"- **Type:** {scenario['failure_type']}")
+        st.markdown(f"- **Root Cause:** `{scenario['root_cause_service']}`")
+        st.markdown(f"- **Affected:** {', '.join(scenario['affected_services'])}")
 
-if run_clicked:
-    with st.spinner(f"Running pipeline for {scenario_id}..."):
-        results = run_pipeline(scenario)
-    st.session_state.results = results
-    st.session_state.ran_scenario = scenario_id
-    st.success(f"Pipeline complete for {scenario_id}!")
+        run_clicked = st.button(
+            "Run Pipeline", type="primary", use_container_width=True, key="p1_run"
+        )
 
-# ── Results ───────────────────────────────────────────────────────────────────
-if st.session_state.results is None:
-    st.info("Select a scenario from the sidebar and click **Run Pipeline** to begin.")
-    st.stop()
+    # Session state for Phase 1 results
+    if "p1_results" not in st.session_state:
+        st.session_state.p1_results = None
+        st.session_state.p1_ran_scenario = None
 
-logs, incidents, clusters, rca_candidates, root_cause, explanation = st.session_state.results
-ran_scenario = st.session_state.ran_scenario
+    if run_clicked:
+        with st.spinner(f"Running pipeline for {scenario_id}..."):
+            results = run_pipeline(scenario)
+        st.session_state.p1_results = results
+        st.session_state.p1_ran_scenario = scenario_id
+        st.success(f"Pipeline complete for {scenario_id}!")
 
-if ran_scenario != scenario_id:
-    st.warning(f"Showing results for **{ran_scenario}**. Click Run Pipeline to run **{scenario_id}**.")
-
-# ── Summary Cards ─────────────────────────────────────────────────────────────
-error_logs = [l for l in logs if l["level"] == "ERROR"]
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Total Logs", len(logs))
-col2.metric("Error Logs", len(error_logs))
-col3.metric("Clusters", len(clusters))
-col4.metric("Services Affected", len(incidents))
-
-st.divider()
-
-# ── Root Cause Analysis ───────────────────────────────────────────────────────
-st.subheader("Root Cause Analysis")
-rca_col, explain_col = st.columns([1, 2])
-
-with rca_col:
-    st.markdown("**Top-3 RCA Candidates**")
-    for rank, c in enumerate(rca_candidates, 1):
-        label = f"#{rank} {c['service']}"
-        if rank == 1:
-            st.success(f"{label} — confidence {c['confidence']:.0%}")
+    with col_main:
+        if st.session_state.p1_results is None:
+            st.info("Select a scenario and click **Run Pipeline** to begin.")
         else:
-            st.info(f"{label} — confidence {c['confidence']:.0%}")
+            logs, incidents, clusters, rca_candidates, root_cause, explanation = (
+                st.session_state.p1_results
+            )
+            ran_scenario = st.session_state.p1_ran_scenario
 
-    st.markdown("**Ground Truth**")
-    expected = scenarios[ran_scenario]["root_cause_service"]
-    match = root_cause == expected
-    if match:
-        st.success(f"Predicted matches expected: **{expected}**")
+            if ran_scenario != scenario_id:
+                st.warning(
+                    f"Showing results for **{ran_scenario}**. "
+                    f"Click Run Pipeline to run **{scenario_id}**."
+                )
+
+            # Summary cards
+            error_logs = [l for l in logs if l["level"] == "ERROR"]
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("Total Logs", len(logs))
+            c2.metric("Error Logs", len(error_logs))
+            c3.metric("Clusters", len(clusters))
+            c4.metric("Services Affected", len(incidents))
+
+            st.divider()
+
+            # RCA + Explanation
+            st.subheader("Root Cause Analysis")
+            rca_col, explain_col = st.columns([1, 2])
+
+            with rca_col:
+                st.markdown("**Top-3 RCA Candidates**")
+                for rank, c in enumerate(rca_candidates, 1):
+                    label = f"#{rank} {c['service']}"
+                    if rank == 1:
+                        st.success(f"{label} — confidence {c['confidence']:.0%}")
+                    else:
+                        st.info(f"{label} — confidence {c['confidence']:.0%}")
+
+                st.markdown("**Ground Truth**")
+                expected = scenarios[ran_scenario]["root_cause_service"]
+                if root_cause == expected:
+                    st.success(f"Predicted matches expected: **{expected}**")
+                else:
+                    st.error(f"Expected: **{expected}** | Predicted: **{root_cause}**")
+
+            with explain_col:
+                st.markdown("**Incident Explanation**")
+                st.code(explanation, language=None)
+
+            st.divider()
+
+            # Clusters
+            st.subheader("Incident Clusters")
+            noise_reduction = 1 - (len(clusters) / len(error_logs)) if error_logs else 0
+            st.caption(
+                f"{len(error_logs)} error logs -> {len(clusters)} clusters "
+                f"({noise_reduction:.1%} noise reduction)"
+            )
+            cluster_rows = [
+                {
+                    "Cluster ID": c["cluster_id"],
+                    "Size": c["size"],
+                    "Services": ", ".join(c["services"]),
+                    "Representative Message": c["summary"],
+                }
+                for c in clusters
+            ]
+            st.dataframe(
+                pd.DataFrame(cluster_rows), use_container_width=True, hide_index=True
+            )
+
+            st.divider()
+
+            # Log stream
+            st.subheader("Log Stream")
+            level_filter = st.multiselect(
+                "Filter by level",
+                options=["INFO", "WARNING", "ERROR"],
+                default=["ERROR"],
+                key="p1_level_filter",
+            )
+            filtered_logs = [l for l in logs if l["level"] in level_filter]
+            log_df = pd.DataFrame(filtered_logs)[["timestamp", "service", "level", "message"]]
+            st.dataframe(log_df, use_container_width=True, hide_index=True, height=300)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 2 — Phase 2 live incidents from PostgreSQL
+# ═══════════════════════════════════════════════════════════════════════════════
+with tab2:
+    repository = try_import_storage()
+
+    if repository is None:
+        st.error("psycopg2 not installed. Run `pip install psycopg2-binary` and restart.")
     else:
-        st.error(f"Expected: **{expected}** | Predicted: **{root_cause}**")
+        try:
+            # ── Controls ──────────────────────────────────────────────────────
+            ctrl_col, _ = st.columns([1, 3])
+            with ctrl_col:
+                auto_refresh = st.toggle("Auto-refresh (10s)", value=False, key="p2_refresh")
+                if st.button("Refresh Now", key="p2_refresh_btn"):
+                    st.rerun()
 
-with explain_col:
-    st.markdown("**Incident Explanation**")
-    st.code(explanation, language=None)
+            if auto_refresh:
+                import time
+                time.sleep(10)
+                st.rerun()
 
-st.divider()
+            st.divider()
 
-# ── Incident Clusters ─────────────────────────────────────────────────────────
-st.subheader("Incident Clusters")
-noise_reduction = 1 - (len(clusters) / len(error_logs)) if error_logs else 0
-st.caption(
-    f"{len(error_logs)} error logs collapsed into {len(clusters)} clusters "
-    f"— {noise_reduction:.1%} noise reduction"
-)
+            # ── Active Incidents ───────────────────────────────────────────────
+            st.subheader("Active Incidents")
+            all_incidents = repository.get_all_incidents()
+            active = [i for i in all_incidents if i["status"] in ("OPEN", "DETECTING", "ACTIVE")]
 
-cluster_rows = [
-    {
-        "Cluster ID": c["cluster_id"],
-        "Size": c["size"],
-        "Services": ", ".join(c["services"]),
-        "Representative Message": c["summary"],
-    }
-    for c in clusters
-]
-st.dataframe(pd.DataFrame(cluster_rows), use_container_width=True, hide_index=True)
+            if not active:
+                st.info("No active incidents. Start the producer and consumer to generate live data.")
+            else:
+                status_color = {"OPEN": "🟡", "DETECTING": "🟠", "ACTIVE": "🔴"}
+                for inc in active:
+                    icon = status_color.get(inc["status"], "⚪")
+                    with st.expander(
+                        f"{icon} {inc['incident_id']} — {inc['status']} | "
+                        f"Root cause: {inc['root_cause'] or 'detecting...'}"
+                    ):
+                        c1, c2, c3 = st.columns(3)
+                        c1.markdown(f"**Status:** {inc['status']}")
+                        c2.markdown(f"**Root Cause:** `{inc['root_cause'] or 'TBD'}`")
+                        c3.markdown(
+                            f"**Affected:** {', '.join(inc['affected_services']) or 'TBD'}"
+                        )
+                        if inc["explanation"]:
+                            st.code(inc["explanation"], language=None)
 
-st.divider()
+                        incident_logs = repository.get_logs_for_incident(inc["incident_id"])
+                        if incident_logs:
+                            st.markdown(f"**{len(incident_logs)} logs in this incident**")
+                            inc_df = pd.DataFrame(incident_logs)[
+                                ["timestamp", "service", "level", "message"]
+                            ]
+                            st.dataframe(inc_df, use_container_width=True, hide_index=True, height=200)
 
-# ── Raw Logs ──────────────────────────────────────────────────────────────────
-st.subheader("Log Stream")
-level_filter = st.multiselect(
-    "Filter by level",
-    options=["INFO", "WARNING", "ERROR"],
-    default=["ERROR"],
-)
-filtered_logs = [l for l in logs if l["level"] in level_filter]
-log_df = pd.DataFrame(filtered_logs)[["timestamp", "service", "level", "message"]]
-st.dataframe(log_df, use_container_width=True, hide_index=True, height=300)
+            st.divider()
+
+            # ── Incident History ───────────────────────────────────────────────
+            st.subheader("Incident History")
+            resolved = [i for i in all_incidents if i["status"] == "RESOLVED"]
+            if not resolved:
+                st.info("No resolved incidents yet.")
+            else:
+                history_rows = [
+                    {
+                        "Incident ID": i["incident_id"],
+                        "Root Cause": i["root_cause"] or "—",
+                        "Affected Services": ", ".join(i["affected_services"]),
+                        "Created": i["created_at"],
+                        "Resolved": i["resolved_at"] or "—",
+                    }
+                    for i in resolved
+                ]
+                st.dataframe(
+                    pd.DataFrame(history_rows), use_container_width=True, hide_index=True
+                )
+
+            st.divider()
+
+            # ── Log Search ────────────────────────────────────────────────────
+            st.subheader("Log Search")
+            query = st.text_input("Search log messages", placeholder="e.g. timeout, ETL, schema mismatch")
+            if query:
+                results = repository.search_logs(query, limit=100)
+                if results:
+                    st.caption(f"{len(results)} results for '{query}'")
+                    search_df = pd.DataFrame(results)[
+                        ["timestamp", "service", "level", "message", "incident_id"]
+                    ]
+                    st.dataframe(search_df, use_container_width=True, hide_index=True, height=300)
+                else:
+                    st.info(f"No logs matching '{query}'")
+
+            st.divider()
+
+            # ── Live Log Stream ───────────────────────────────────────────────
+            st.subheader("Live Log Stream")
+            level_filter_p2 = st.multiselect(
+                "Filter by level",
+                options=["INFO", "WARNING", "ERROR"],
+                default=["ERROR"],
+                key="p2_level_filter",
+            )
+            recent_logs = repository.get_recent_logs(limit=200)
+            filtered = [l for l in recent_logs if l["level"] in level_filter_p2]
+            if filtered:
+                live_df = pd.DataFrame(filtered)[
+                    ["timestamp", "service", "level", "message", "incident_id"]
+                ]
+                st.dataframe(live_df, use_container_width=True, hide_index=True, height=300)
+            else:
+                st.info("No logs in database yet.")
+
+        except Exception as e:
+            st.error(
+                f"Cannot connect to PostgreSQL: {e}\n\n"
+                "Make sure PostgreSQL is running and `configs/settings.yaml` has the correct credentials."
+        )
