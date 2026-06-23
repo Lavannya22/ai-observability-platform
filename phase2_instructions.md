@@ -58,12 +58,15 @@ Phase 6 validates scalability.
 ai-observability-platform/
 
 ├── ingestion/
+│   ├── __init__.py
 │   ├── producer.py
 │   └── consumer.py
 │
 ├── storage/
+│   ├── __init__.py
 │   ├── postgres.py
-│   └── repository.py
+│   ├── repository.py
+│   └── setup_db.py        ← one-time DB + table creation script
 │
 ├── scenarios/
 ├── generator/
@@ -96,10 +99,13 @@ Generate logs
 Publish logs to Kafka
 ```
 
-Example:
+Uses `confluent-kafka` (not `kafka-python` — incompatible with Python 3.13):
 
 ```python
-producer.send("logs", log_record)
+producer = Producer({"bootstrap.servers": bootstrap_servers})
+producer.produce(topic, value=json.dumps(log).encode("utf-8"))
+producer.poll(0)   # serve delivery callbacks
+producer.flush()
 ```
 
 ---
@@ -146,12 +152,14 @@ CREATE TABLE logs (
 
 ```sql
 CREATE TABLE incidents (
-    incident_id VARCHAR(50),
-    status VARCHAR(20),
-    root_cause VARCHAR(100),
-    created_at TIMESTAMP,
-    resolved_at TIMESTAMP,
-    explanation TEXT
+    incident_id       VARCHAR(50) PRIMARY KEY,
+    status            VARCHAR(20)  DEFAULT 'OPEN',
+    affected_services TEXT,        -- JSON array e.g. '["database","metadata"]'
+    root_cause        VARCHAR(100),
+    created_at        TIMESTAMP    DEFAULT NOW(),
+    resolved_at       TIMESTAMP,
+    explanation       TEXT,
+    last_log_at       TIMESTAMP    -- wall-clock time of last received log (NOT log timestamp)
 );
 ```
 
@@ -193,10 +201,10 @@ RESOLVED
 
 ```yaml
 incident:
-  timeout_seconds: 30
+  timeout_seconds: 600   # 10 minutes
 ```
 
-Incident automatically closes.
+Incident automatically closes. The resolver thread re-reads this value from config on every cycle, so changes take effect without restarting the consumer.
 
 ---
 
@@ -336,16 +344,19 @@ ETL failure at 15:00
 
 ```python
 def assign_incident(log):
+    log_time = datetime.utcnow()   # wall-clock, NOT log["timestamp"]
     for incident in active_incidents:
-        if within_merge_window(log, incident):
-            if graph_related(
-                log.service,
-                incident.affected_services
-            ):
+        if within_merge_window(log_time, incident, merge_window_minutes):
+            if graph_related(log.service, incident.affected_services):
                 return incident.id
 
     return create_new_incident()
 ```
+
+> **Critical:** Always use `datetime.utcnow()` (wall-clock) for time comparisons,
+> never `log["timestamp"]`. Log timestamps are fake simulation times (2025-01-15)
+> and would make every incident appear to have been inactive for ~500 days,
+> resolving it instantly.
 
 > **Testing note:** Write a unit test that feeds errors out of strict
 > dependency order (e.g. `etl` arrives before `metadata`) and confirms they
@@ -508,32 +519,53 @@ Update `configs/settings.yaml`:
 ```yaml
 kafka:
   topic: logs
-  bootstrap_servers: localhost:9092
+  bootstrap_servers: localhost:29092   # external listener port (not 9092 — that's Docker-internal)
 
 postgres:
   host: localhost
   port: 5432
   database: observability
+  user: trading      # matches existing postgres container credentials
+  password: trading
 
 incident:
-  timeout_seconds: 30
+  timeout_seconds: 600   # 10 minutes
   merge_window_minutes: 10
 ```
+
+> **Kafka port:** The Confluent cp-kafka container exposes two listeners:
+> `PLAINTEXT://kafka:9092` (Docker-internal) and `PLAINTEXT_HOST://localhost:29092` (host-accessible).
+> Python clients running on the host must use port `29092`.
+
+## Step 11 — Database Setup
+
+Run once before starting the consumer:
+
+```bash
+python storage/setup_db.py
+```
+
+This creates the `observability` database (connecting via the default `postgres` DB first)
+and then creates the `logs` and `incidents` tables.
 
 ---
 
 ## Build Order
 
-1. `storage/postgres.py`
-2. `storage/repository.py`
-3. SQL table creation (`logs`, `incidents`)
-4. `ingestion/consumer.py` (lifecycle + merge logic)
-5. `ingestion/producer.py`
-6. Detection upgrade (`rca/detector.py`)
-7. Streaming clustering upgrade (`rca/clustering.py`)
-8. `evaluation/evaluate.py` — add throughput/latency/message-loss metrics
-9. `configs/settings.yaml` updates
-10. `dashboard/app.py` — PostgreSQL-backed views
+1. `configs/settings.yaml` — add kafka, postgres, incident blocks
+2. `storage/__init__.py`
+3. `storage/postgres.py` — connection + table DDL (uses absolute path for config)
+4. `storage/repository.py` — CRUD for logs and incidents
+5. `storage/setup_db.py` — one-time DB creation script
+6. `ingestion/__init__.py`
+7. `ingestion/producer.py` — confluent_kafka Producer
+8. `ingestion/consumer.py` — lifecycle + merge logic + background resolver
+9. `evaluation/evaluate.py` — add throughput/latency/message-loss metrics
+10. `dashboard/app.py` — add Phase 2 tab (PostgreSQL-backed)
+11. `requirements.txt` — add `confluent-kafka`, `psycopg2-binary`
+
+> `rca/detector.py` and `rca/clustering.py` do NOT need changes — the existing
+> functions accept any list of logs and work correctly when called with incident-scoped logs.
 
 > Storage comes first because the consumer depends on it. Lifecycle and merge
 > logic should be unit tested before wiring up the live Kafka consumer loop.
