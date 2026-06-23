@@ -1,6 +1,33 @@
 import networkx as nx
 
 
+def rank_root_causes(incident_services: list[str], graph: nx.DiGraph) -> list[dict]:
+    """
+    Return ALL incident services ranked by root-cause likelihood with
+    probability-normalised confidence (score / sum_of_all_scores).
+
+    Used by Phase 4 MRR evaluation and evidence generation.
+    """
+    propagation_graph = graph.reverse()
+
+    scores: dict[str, int] = {}
+    for service in incident_services:
+        downstream = nx.descendants(propagation_graph, service)
+        scores[service] = sum(1 for node in downstream if node in incident_services)
+
+    total = sum(scores.values())
+    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+    return [
+        {
+            "service": svc,
+            "score": score,
+            "confidence": round(score / total, 4) if total > 0 else round(1 / len(scores), 4),
+        }
+        for svc, score in ranked
+    ]
+
+
 def find_root_cause(incident_services: list[str], graph: nx.DiGraph) -> list[dict]:
     """
     Score each incident service by how many other incident services are

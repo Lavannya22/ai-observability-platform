@@ -16,6 +16,25 @@
       "better_clustering": false
     }
   },
+  "clustering_three_way": {
+    "greedy": {
+      "v_measure": 0.6186,
+      "nmi": 0.6186,
+      "num_clusters": 21
+    },
+    "kmeans": {
+      "v_measure": 0.3135,
+      "nmi": 0.3135,
+      "num_clusters": 5
+    },
+    "hdbscan": {
+      "v_measure": 0.7211,
+      "nmi": 0.7211,
+      "num_clusters": 14,
+      "noise_points": 13,
+      "noise_rate": 0.0963
+    }
+  },
   "anomaly_detection": {
     "precision": 1.0,
     "recall": 0.4429,
@@ -32,6 +51,9 @@
   "rca": {
     "top1_accuracy": 1.0,
     "top3_accuracy": 1.0
+  },
+  "ranking": {
+    "mrr": 1.0
   },
   "per_scenario_rca": [
     {
@@ -173,6 +195,258 @@
       "predicted": "database",
       "top1": true,
       "top3": true
+    }
+  ],
+  "per_scenario_ranking": [
+    {
+      "scenario_id": "S001",
+      "expected": "database",
+      "predicted": "database",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "database": 0.4,
+        "metadata": 0.3,
+        "etl": 0.2,
+        "analytics": 0.1,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S002",
+      "expected": "etl",
+      "predicted": "etl",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "etl": 0.6667,
+        "analytics": 0.3333,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S003",
+      "expected": "metadata",
+      "predicted": "metadata",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "metadata": 0.5,
+        "etl": 0.3333,
+        "analytics": 0.1667,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S004",
+      "expected": "analytics",
+      "predicted": "analytics",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "analytics": 1.0,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S005",
+      "expected": "metadata",
+      "predicted": "metadata",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "metadata": 0.5,
+        "etl": 0.3333,
+        "analytics": 0.1667,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S006",
+      "expected": "etl",
+      "predicted": "etl",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "etl": 0.6667,
+        "analytics": 0.3333,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S007",
+      "expected": "etl",
+      "predicted": "etl",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "etl": 0.6667,
+        "analytics": 0.3333,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S008",
+      "expected": "database",
+      "predicted": "database",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "database": 0.4,
+        "metadata": 0.3,
+        "etl": 0.2,
+        "analytics": 0.1,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S009",
+      "expected": "database",
+      "predicted": "database",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "database": 0.4,
+        "metadata": 0.3,
+        "etl": 0.2,
+        "analytics": 0.1,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S010",
+      "expected": "database",
+      "predicted": "database",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "database": 0.4,
+        "metadata": 0.3,
+        "etl": 0.2,
+        "analytics": 0.1,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S011",
+      "expected": "analytics",
+      "predicted": "analytics",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "analytics": 1.0,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S012",
+      "expected": "etl",
+      "predicted": "etl",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "etl": 0.6667,
+        "analytics": 0.3333,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S013",
+      "expected": "metadata",
+      "predicted": "metadata",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "metadata": 0.5,
+        "etl": 0.3333,
+        "analytics": 0.1667,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S014",
+      "expected": "etl",
+      "predicted": "etl",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "etl": 0.6667,
+        "analytics": 0.3333,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S015",
+      "expected": "etl",
+      "predicted": "etl",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "etl": 0.6667,
+        "analytics": 0.3333,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S016",
+      "expected": "database",
+      "predicted": "database",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "database": 0.4,
+        "metadata": 0.3,
+        "etl": 0.2,
+        "analytics": 0.1,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S017",
+      "expected": "analytics",
+      "predicted": "analytics",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "analytics": 1.0,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S018",
+      "expected": "reporting",
+      "predicted": "reporting",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "reporting": 1.0
+      }
+    },
+    {
+      "scenario_id": "S019",
+      "expected": "etl",
+      "predicted": "etl",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "etl": 0.6667,
+        "analytics": 0.3333,
+        "reporting": 0.0
+      }
+    },
+    {
+      "scenario_id": "S020",
+      "expected": "database",
+      "predicted": "database",
+      "rank": 1,
+      "reciprocal_rank": 1.0,
+      "confidence_distribution": {
+        "database": 0.4,
+        "metadata": 0.3,
+        "etl": 0.2,
+        "analytics": 0.1,
+        "reporting": 0.0
+      }
     }
   ]
 }

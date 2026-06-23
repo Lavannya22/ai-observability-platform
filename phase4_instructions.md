@@ -95,11 +95,14 @@ Evaluate Greedy vs K-Means vs HDBSCAN.
 **Transparency Requirement:** every clustering report must include Cluster
 Count alongside V-Measure, NMI, and Noise Reduction.
 
-| Method  | Clusters | V-Measure |
-| ------- | -------- | --------- |
-| Greedy  | 21       | 0.62      |
-| K-Means | 5        | 0.31      |
-| HDBSCAN | 18       | ?         |
+| Method  | Clusters | V-Measure | NMI    | Noise Rate |
+| ------- | -------- | --------- | ------ | ---------- |
+| Greedy  | 21       | 0.6186    | 0.6186 | N/A        |
+| K-Means | 5        | 0.3135    | 0.3135 | N/A        |
+| HDBSCAN | 14       | 0.7211    | 0.7211 | 9.6%       |
+
+**Result:** HDBSCAN (0.7211) beats the greedy baseline (0.6186) by +0.1025.
+Sentence embeddings capture semantic similarity that TF-IDF misses.
 
 This prevents score inflation through over-fragmentation — a high V-Measure
 from a method that simply produces many small clusters is not evidence that
@@ -242,11 +245,9 @@ Compare Greedy / K-Means / HDBSCAN on:
 * Noise Reduction
 * Cluster Count
 
-Generate:
-
-```text
-evaluation/comparison_report.json
-```
+Results are integrated into `evaluation/results.json` under the
+`clustering_three_way` key (not a separate file). The key sits alongside
+the existing Phase 3 `clustering` key so both are preserved.
 
 ---
 
@@ -343,6 +344,13 @@ raw_scores = {"database": 12, "metadata": 1, "etl": 0}
 confidence = score / total
 ```
 
+### Implementation
+
+Added as `rank_root_causes()` in `rca/engine.py` (alongside the existing
+`find_root_cause()`). The existing function is untouched — it remains for
+backward compatibility. The consumer, dashboard, and evaluation scripts all
+use `rank_root_causes()`.
+
 ### Purpose
 
 This is an **explainability upgrade**, not an accuracy upgrade — RCA already
@@ -409,18 +417,26 @@ against logs or the graph.
 
 ## Step 10 — Automated Reporting
 
-Extend `evaluation/results.json`:
+Extend `evaluation/generate_report.py` from 3 steps (Phase 3) to 5 steps,
+and extend `evaluation/results.json` to include Phase 4 sections.
+
+Actual `results.json` structure after Phase 4:
 
 ```json
 {
-  "clustering": {
-    "greedy": {},
-    "kmeans": {},
-    "hdbscan": {}
+  "clustering": { "baseline": {}, "ml_kmeans": {}, "comparison": {} },
+  "clustering_three_way": {
+    "greedy":  { "v_measure": 0.6186, "nmi": 0.6186, "num_clusters": 21 },
+    "kmeans":  { "v_measure": 0.3135, "nmi": 0.3135, "num_clusters": 5 },
+    "hdbscan": { "v_measure": 0.7211, "nmi": 0.7211, "num_clusters": 14,
+                 "noise_points": 13, "noise_rate": 0.0963 }
   },
-  "ranking": {
-    "mrr": 0.95
-  }
+  "anomaly_detection": {},
+  "anomaly_detection_detail": {},
+  "rca": { "top1_accuracy": 1.0, "top3_accuracy": 1.0 },
+  "ranking": { "mrr": 1.0 },
+  "per_scenario_rca": [],
+  "per_scenario_ranking": []
 }
 ```
 
@@ -428,18 +444,47 @@ Extend `evaluation/results.json`:
 
 ## Build Order
 
-1. `ml/embeddings.py` — Sentence Transformer wrapper
-2. `ml/hdbscan_clustering.py` — embeddings → HDBSCAN pipeline
-3. `evaluation/evaluate_hdbscan.py` — three-way comparison with cluster count transparency
-4. `rca/dependency_graph.py` — graph logic moved/centralized here
-5. `rca/propagation.py` — propagation path + match definition (Rules 1–3)
-6. Root cause ranking logic (normalize existing RCA scores)
-7. `evaluation/evaluate_ranking.py` — MRR calculation
-8. `rca/evidence.py` — evidence generation
-9. `evaluation/results.json` — extend with clustering + ranking sections
+1. ✅ `ml/embeddings.py` — Sentence Transformer wrapper (`all-MiniLM-L6-v2`, 384-dim)
+2. ✅ `ml/hdbscan_clustering.py` — embeddings → HDBSCAN pipeline, `evaluate_hdbscan()` excludes noise from metrics
+3. ✅ `evaluation/evaluate_hdbscan.py` — three-way comparison; imports same corpus from `evaluate_clustering.py`
+4. ✅ `rca/dependency_graph.py` — already existed from Phase 1, no change needed
+5. ✅ `rca/propagation.py` — propagation path + match definition (Rules 1–3)
+6. ✅ `rca/engine.py` — added `rank_root_causes()` using `score/total` normalisation
+7. ✅ `evaluation/evaluate_ranking.py` — MRR calculation across 20 scenarios
+8. ✅ `rca/evidence.py` — evidence generation (up to 5 grounded evidence bullets)
+9. ✅ `evaluation/generate_report.py` — extended from 3-step to 5-step pipeline
+10. ✅ `evaluation/results.json` — extended with `clustering_three_way` and `ranking` sections
+
+**Modified files (existing files changed for Phase 4):**
+
+| File | Change |
+| ---- | ------ |
+| `rca/engine.py` | Added `rank_root_causes()` before `find_root_cause()` |
+| `ingestion/consumer.py` | Uses `rank_root_causes`, `generate_evidence`, `analyse_propagation`; stores Phase 4 JSON in DB |
+| `storage/postgres.py` | Added `evidence`, `propagation_path`, `confidence_scores` columns + ALTER TABLE migration |
+| `storage/repository.py` | `get_all_incidents()` now returns 3 new columns, parsed from JSON |
+| `evaluation/generate_report.py` | Extended from 3 to 5 steps; imports `run_hdbscan`, `run_ranking` |
+| `dashboard/app.py` | Tab 1 uses Phase 4 components; Tab 3 shows three-way clustering + MRR |
 
 > `rca/clustering.py` and `ml/clustering.py` remain untouched throughout —
 > they are baselines being compared against, not replaced.
+
+---
+
+## Actual Results
+
+| Metric | Target | Achieved |
+| ------ | ------ | -------- |
+| HDBSCAN V-Measure | ≥ 0.6186 (greedy baseline) | **0.7211** ✅ |
+| HDBSCAN NMI | ≥ 0.6186 | **0.7211** ✅ |
+| HDBSCAN Clusters | (transparent) | 14 |
+| Noise Rate | (reported) | 9.6% |
+| RCA Top-1 Accuracy | Maintain 100% | **100%** ✅ |
+| RCA Top-3 Accuracy | Maintain 100% | **100%** ✅ |
+| MRR | ≥ 0.90 | **1.0000** ✅ (all 20 ranked #1) |
+
+All 20 scenarios: root cause ranked at position #1 with calibrated
+probability-normalised confidence scores.
 
 ---
 

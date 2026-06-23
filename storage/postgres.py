@@ -46,9 +46,23 @@ def create_tables(config_path: str = _DEFAULT_CONFIG):
             created_at        TIMESTAMP    DEFAULT NOW(),
             resolved_at       TIMESTAMP,
             explanation       TEXT,
-            last_log_at       TIMESTAMP
+            last_log_at       TIMESTAMP,
+            evidence          TEXT,
+            propagation_path  TEXT,
+            confidence_scores TEXT
         )
     """)
+
+    # Migrate existing databases that predate Phase 4 columns
+    for col, coltype in [
+        ("evidence", "TEXT"),
+        ("propagation_path", "TEXT"),
+        ("confidence_scores", "TEXT"),
+    ]:
+        cur.execute(f"""
+            ALTER TABLE incidents
+            ADD COLUMN IF NOT EXISTS {col} {coltype}
+        """)
 
     conn.commit()
     cur.close()

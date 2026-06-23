@@ -30,8 +30,10 @@ from storage.postgres import create_tables
 from storage import repository
 from rca.dependency_graph import build_graph
 from rca.clustering import cluster_logs
-from rca.engine import find_root_cause
+from rca.engine import rank_root_causes
 from rca.explainer import explain_incident
+from rca.evidence import generate_evidence
+from rca.propagation import analyse_propagation
 
 
 ROOT = Path(__file__).parent.parent
@@ -87,7 +89,7 @@ def assign_incident(
 # ── RCA trigger ───────────────────────────────────────────────────────────────
 
 def run_rca_for_incident(incident_id: str, graph: nx.DiGraph, error_threshold: int):
-    """Pull incident logs, run detection -> clustering -> RCA, update incident record."""
+    """Pull incident logs, run RCA + Phase 4 evidence, update incident record."""
     logs = repository.get_logs_for_incident(incident_id)
 
     error_counts: dict[str, int] = defaultdict(int)
@@ -104,11 +106,13 @@ def run_rca_for_incident(incident_id: str, graph: nx.DiGraph, error_threshold: i
     repository.update_incident(incident_id, status="DETECTING")
 
     clusters = cluster_logs(logs)
-    rca_candidates = find_root_cause(incident_services, graph)
-    if not rca_candidates:
+
+    # Phase 4: probability-normalised ranking
+    ranked = rank_root_causes(incident_services, graph)
+    if not ranked:
         return
 
-    root_cause = rca_candidates[0]["service"]
+    root_cause = ranked[0]["service"]
     downstream = [s for s in incident_services if s != root_cause]
 
     explanation = explain_incident(
@@ -118,16 +122,27 @@ def run_rca_for_incident(incident_id: str, graph: nx.DiGraph, error_threshold: i
         failure_type="cascade_failure",
     )
 
+    # Phase 4: evidence + propagation
+    ev = generate_evidence(root_cause, incident_services, logs, graph)
+    prop = analyse_propagation(root_cause, incident_services, graph)
+
+    import json as _json
     repository.update_incident(
         incident_id,
         root_cause=root_cause,
         explanation=explanation,
         status="ACTIVE",
+        evidence=_json.dumps(ev["evidence"]),
+        propagation_path=_json.dumps(prop["propagation_path"]),
+        confidence_scores=_json.dumps([
+            {"service": c["service"], "confidence": c["confidence"]} for c in ranked
+        ]),
     )
 
     print(
         f"[RCA] {incident_id}: root_cause={root_cause} | "
-        f"services={incident_services} | clusters={len(clusters)}"
+        f"services={incident_services} | clusters={len(clusters)} | "
+        f"propagation={'MATCH' if prop['match'] else 'MISMATCH'}"
     )
 
 

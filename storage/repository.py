@@ -181,7 +181,8 @@ def get_all_incidents(limit: int = 100) -> list[dict]:
     cur = conn.cursor()
     cur.execute(
         """
-        SELECT incident_id, status, affected_services, root_cause, created_at, resolved_at, explanation
+        SELECT incident_id, status, affected_services, root_cause, created_at, resolved_at,
+               explanation, evidence, propagation_path, confidence_scores
         FROM incidents
         ORDER BY created_at DESC
         LIMIT %s
@@ -200,6 +201,9 @@ def get_all_incidents(limit: int = 100) -> list[dict]:
             "created_at": str(row[4]),
             "resolved_at": str(row[5]) if row[5] else None,
             "explanation": row[6],
+            "evidence": json.loads(row[7]) if row[7] else [],
+            "propagation_path": json.loads(row[8]) if row[8] else [],
+            "confidence_scores": json.loads(row[9]) if row[9] else [],
         }
         for row in rows
     ]
