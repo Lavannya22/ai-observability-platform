@@ -5,11 +5,7 @@
     "failure_type": "resource_exhaustion",
     "root_cause_service": "database",
     "affected_services": ["metadata", "etl", "analytics", "reporting"],
-    "log_signatures": [
-      "DB connection timeout",
-      "query latency high",
-      "connection pool exhausted"
-    ]
+    "log_signatures": ["DB connection timeout", "query latency high", "connection pool exhausted"]
   },
   {
     "scenario_id": "S002",
@@ -17,11 +13,7 @@
     "failure_type": "job_failure",
     "root_cause_service": "etl",
     "affected_services": ["analytics", "reporting"],
-    "log_signatures": [
-      "ETL job crashed",
-      "data transformation error",
-      "null pointer in pipeline"
-    ]
+    "log_signatures": ["ETL job crashed", "data transformation error", "null pointer in pipeline"]
   },
   {
     "scenario_id": "S003",
@@ -29,11 +21,7 @@
     "failure_type": "data_corruption",
     "root_cause_service": "metadata",
     "affected_services": ["etl", "analytics", "reporting"],
-    "log_signatures": [
-      "schema mismatch detected",
-      "invalid data format",
-      "missing required fields"
-    ]
+    "log_signatures": ["schema mismatch detected", "invalid data format", "missing required fields"]
   },
   {
     "scenario_id": "S004",
@@ -41,10 +29,134 @@
     "failure_type": "service_crash",
     "root_cause_service": "analytics",
     "affected_services": ["reporting"],
-    "log_signatures": [
-      "out of memory error",
-      "segmentation fault",
-      "analytics service terminated unexpectedly"
-    ]
+    "log_signatures": ["out of memory error", "segmentation fault", "analytics service terminated unexpectedly"]
+  },
+  {
+    "scenario_id": "S005",
+    "name": "Schema Mismatch",
+    "failure_type": "data_corruption",
+    "root_cause_service": "metadata",
+    "affected_services": ["etl", "analytics", "reporting"],
+    "log_signatures": ["schema mismatch detected", "column type conflict", "incompatible schema version"]
+  },
+  {
+    "scenario_id": "S006",
+    "name": "Null Data Explosion",
+    "failure_type": "data_corruption",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "log_signatures": ["null pointer in pipeline", "null value in non-nullable column", "data transformation error"]
+  },
+  {
+    "scenario_id": "S007",
+    "name": "Duplicate Records",
+    "failure_type": "data_corruption",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "log_signatures": ["duplicate key violation", "ETL job crashed", "batch aborted after retries"]
+  },
+  {
+    "scenario_id": "S008",
+    "name": "Upstream API Failure",
+    "failure_type": "service_crash",
+    "root_cause_service": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "log_signatures": ["DB connection timeout", "connection pool exhausted", "transaction rolled back"]
+  },
+  {
+    "scenario_id": "S009",
+    "name": "Disk Exhaustion",
+    "failure_type": "resource_exhaustion",
+    "root_cause_service": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "log_signatures": ["disk I/O saturation detected", "DB connection timeout", "query latency high"]
+  },
+  {
+    "scenario_id": "S010",
+    "name": "Slow Query",
+    "failure_type": "performance_degradation",
+    "root_cause_service": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "log_signatures": ["query latency high", "transaction rolled back due to deadlock", "DB connection timeout"]
+  },
+  {
+    "scenario_id": "S011",
+    "name": "Memory Leak",
+    "failure_type": "resource_exhaustion",
+    "root_cause_service": "analytics",
+    "affected_services": ["reporting"],
+    "log_signatures": ["out of memory error", "analytics service terminated unexpectedly", "query timeout"]
+  },
+  {
+    "scenario_id": "S012",
+    "name": "Kafka Consumer Lag",
+    "failure_type": "performance_degradation",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "log_signatures": ["ETL job crashed", "batch aborted after retries", "data transformation error"]
+  },
+  {
+    "scenario_id": "S013",
+    "name": "Corrupted File",
+    "failure_type": "data_corruption",
+    "root_cause_service": "metadata",
+    "affected_services": ["etl", "analytics", "reporting"],
+    "log_signatures": ["invalid data format", "missing required fields", "metadata service failed to reach database"]
+  },
+  {
+    "scenario_id": "S014",
+    "name": "Late Arriving Data",
+    "failure_type": "performance_degradation",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "log_signatures": ["ETL job crashed", "null pointer in pipeline", "data transformation error"]
+  },
+  {
+    "scenario_id": "S015",
+    "name": "Job Timeout",
+    "failure_type": "job_failure",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "log_signatures": ["ETL job crashed", "batch aborted after retries", "ETL failed to fetch metadata"]
+  },
+  {
+    "scenario_id": "S016",
+    "name": "High Retry Rate",
+    "failure_type": "resource_exhaustion",
+    "root_cause_service": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "log_signatures": ["connection pool exhausted", "transaction rolled back due to deadlock", "DB connection timeout"]
+  },
+  {
+    "scenario_id": "S017",
+    "name": "Analytics Failure",
+    "failure_type": "service_crash",
+    "root_cause_service": "analytics",
+    "affected_services": ["reporting"],
+    "log_signatures": ["segmentation fault", "analytics service terminated unexpectedly", "failed to read ETL output"]
+  },
+  {
+    "scenario_id": "S018",
+    "name": "Dashboard Failure",
+    "failure_type": "service_crash",
+    "root_cause_service": "reporting",
+    "affected_services": [],
+    "log_signatures": ["report generation failed", "analytics data unavailable", "export failed"]
+  },
+  {
+    "scenario_id": "S019",
+    "name": "Partial Pipeline Failure",
+    "failure_type": "job_failure",
+    "root_cause_service": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "log_signatures": ["data transformation error", "null pointer in pipeline", "batch aborted after retries"]
+  },
+  {
+    "scenario_id": "S020",
+    "name": "Multi-Service Cascade",
+    "failure_type": "resource_exhaustion",
+    "root_cause_service": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "log_signatures": ["DB connection timeout", "connection pool exhausted", "disk I/O saturation detected"]
   }
 ]

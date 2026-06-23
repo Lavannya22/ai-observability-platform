@@ -1,26 +1,142 @@
 [
   {
     "scenario_id": "S001",
-    "root_cause_service": "database",
+    "root_cause": "database",
     "affected_services": ["metadata", "etl", "analytics", "reporting"],
-    "expected_rca_rank": 1
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 174}
   },
   {
     "scenario_id": "S002",
-    "root_cause_service": "etl",
+    "root_cause": "etl",
     "affected_services": ["analytics", "reporting"],
-    "expected_rca_rank": 1
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 144}
   },
   {
     "scenario_id": "S003",
-    "root_cause_service": "metadata",
+    "root_cause": "metadata",
     "affected_services": ["etl", "analytics", "reporting"],
-    "expected_rca_rank": 1
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 159}
   },
   {
     "scenario_id": "S004",
-    "root_cause_service": "analytics",
+    "root_cause": "analytics",
     "affected_services": ["reporting"],
-    "expected_rca_rank": 1
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 129}
+  },
+  {
+    "scenario_id": "S005",
+    "root_cause": "metadata",
+    "affected_services": ["etl", "analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 159}
+  },
+  {
+    "scenario_id": "S006",
+    "root_cause": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 144}
+  },
+  {
+    "scenario_id": "S007",
+    "root_cause": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 144}
+  },
+  {
+    "scenario_id": "S008",
+    "root_cause": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 174}
+  },
+  {
+    "scenario_id": "S009",
+    "root_cause": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 174}
+  },
+  {
+    "scenario_id": "S010",
+    "root_cause": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 174}
+  },
+  {
+    "scenario_id": "S011",
+    "root_cause": "analytics",
+    "affected_services": ["reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 129}
+  },
+  {
+    "scenario_id": "S012",
+    "root_cause": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 144}
+  },
+  {
+    "scenario_id": "S013",
+    "root_cause": "metadata",
+    "affected_services": ["etl", "analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 159}
+  },
+  {
+    "scenario_id": "S014",
+    "root_cause": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 144}
+  },
+  {
+    "scenario_id": "S015",
+    "root_cause": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 144}
+  },
+  {
+    "scenario_id": "S016",
+    "root_cause": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 174}
+  },
+  {
+    "scenario_id": "S017",
+    "root_cause": "analytics",
+    "affected_services": ["reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 129}
+  },
+  {
+    "scenario_id": "S018",
+    "root_cause": "reporting",
+    "affected_services": [],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 114}
+  },
+  {
+    "scenario_id": "S019",
+    "root_cause": "etl",
+    "affected_services": ["analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 144}
+  },
+  {
+    "scenario_id": "S020",
+    "root_cause": "database",
+    "affected_services": ["metadata", "etl", "analytics", "reporting"],
+    "expected_rca_rank": 1,
+    "anomaly_window": {"start_offset_seconds": 100, "end_offset_seconds": 174}
   }
 ]

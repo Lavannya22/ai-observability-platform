@@ -98,11 +98,15 @@ def _fill(template: str) -> str:
     )
 
 
-def generate_logs(scenario: dict, config_path: str = "configs/settings.yaml") -> list[dict]:
+def generate_logs(
+    scenario: dict,
+    config_path: str = "configs/settings.yaml",
+    seed_offset: int = 0,
+) -> list[dict]:
     with open(config_path) as f:
         config = yaml.safe_load(f)
 
-    seed = config["log_generator"]["seed"]
+    seed = config["log_generator"]["seed"] + seed_offset
     normal_count = config["log_generator"]["normal_logs_per_service"]
     error_count = config["log_generator"]["error_logs_per_service"]
     all_services = config["pipeline"]["services"]

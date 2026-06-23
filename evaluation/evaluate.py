@@ -32,14 +32,14 @@ def evaluate(
 
     results = {
         "scenario_id": scenario_id,
-        "rca_top1_correct": rca_accuracy_at_k(rca_candidates, gt["root_cause_service"], k=1),
-        "rca_top3_correct": rca_accuracy_at_k(rca_candidates, gt["root_cause_service"], k=3),
-        "detection_hit": detection_hit(incidents, [gt["root_cause_service"]] + gt["affected_services"]),
+        "rca_top1_correct": rca_accuracy_at_k(rca_candidates, gt["root_cause"], k=1),
+        "rca_top3_correct": rca_accuracy_at_k(rca_candidates, gt["root_cause"], k=3),
+        "detection_hit": detection_hit(incidents, [gt["root_cause"]] + gt["affected_services"]),
         "total_error_logs": total_errors,
         "num_clusters": num_clusters,
         "noise_reduction": cluster_noise_reduction(total_errors, num_clusters),
         "predicted_root_cause": rca_candidates[0]["service"] if rca_candidates else None,
-        "expected_root_cause": gt["root_cause_service"],
+        "expected_root_cause": gt["root_cause"],
     }
     return results
 

@@ -1,0 +1,66 @@
+{
+  "scenario_id": "S018",
+  "scenario_name": "Dashboard Failure",
+  "logs_generated": 115,
+  "incidents": [
+    {
+      "service": "reporting",
+      "error_count": 15,
+      "triggered_at": "2025-01-15T09:01:54"
+    }
+  ],
+  "clusters": [
+    {
+      "cluster_id": 0,
+      "size": 5,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report rpt_39 generation failed"
+    },
+    {
+      "cluster_id": 1,
+      "size": 7,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Export failed: upstream data missing"
+    },
+    {
+      "cluster_id": 2,
+      "size": 2,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Analytics data unavailable for report rpt_22"
+    },
+    {
+      "cluster_id": 3,
+      "size": 1,
+      "services": [
+        "reporting"
+      ],
+      "summary": "Report delivery timeout for user_12"
+    }
+  ],
+  "rca_candidates": [
+    {
+      "service": "reporting",
+      "score": 0,
+      "confidence": 0.0
+    }
+  ],
+  "root_cause": "reporting",
+  "explanation": "INCIDENT SUMMARY\n================\nRoot Cause Service : reporting\nFailure Type       : a service crash\nAffected Services  : none\n\nWHAT HAPPENED\n-------------\nThe reporting service experienced a service crash. Because downstream services\ndepend on reporting, failures cascaded to: none.\n\nEVIDENCE (sample log messages)\n-------------------------------\n  [reporting] Report rpt_39 generation failed\n  [reporting] Export failed: upstream data missing\n  [reporting] Report rpt_96 generation failed\n  [reporting] Export failed: upstream data missing\n  [reporting] Export failed: upstream data missing\n\nRECOMMENDED REMEDIATION\n------------------------\n  1. Verify upstream analytics service is healthy.\n  2. Retry failed report generation jobs.\n  3. Check report scheduler for stuck jobs.",
+  "evaluation": {
+    "scenario_id": "S018",
+    "rca_top1_correct": true,
+    "rca_top3_correct": true,
+    "detection_hit": true,
+    "total_error_logs": 15,
+    "num_clusters": 4,
+    "noise_reduction": 0.7333,
+    "predicted_root_cause": "reporting",
+    "expected_root_cause": "reporting"
+  }
+}
