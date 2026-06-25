@@ -35,6 +35,13 @@ from rca.explainer import explain_incident
 from rca.evidence import generate_evidence
 from rca.propagation import analyse_propagation
 
+# Phase 5: knowledge indexing (optional — requires OpenSearch)
+try:
+    from knowledge.knowledge_builder import build_and_index as _index_incident
+    _KNOWLEDGE_STORE_AVAILABLE = True
+except ImportError:
+    _KNOWLEDGE_STORE_AVAILABLE = False
+
 
 ROOT = Path(__file__).parent.parent
 
@@ -175,6 +182,19 @@ def resolve_stale_incidents(config_path: str, graph: nx.DiGraph):
                         f"[RESOLVED] {incident['incident_id']} "
                         f"auto-closed after {age:.0f}s inactivity"
                     )
+                    # Phase 5: index resolved incident into knowledge store
+                    if _KNOWLEDGE_STORE_AVAILABLE:
+                        try:
+                            incidents = repository.get_all_incidents()
+                            resolved = next(
+                                (i for i in incidents
+                                 if i["incident_id"] == incident["incident_id"]),
+                                None,
+                            )
+                            if resolved:
+                                _index_incident(resolved)
+                        except Exception as e:
+                            print(f"[KNOWLEDGE] Index failed for {incident['incident_id']}: {e}")
         except Exception as e:
             print(f"[RESOLVER ERROR] {e}")
 

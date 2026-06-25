@@ -1,0 +1,62 @@
+[
+  {
+    "query_id": "Q001",
+    "query": "database timeout causing downstream failures",
+    "expected_root_cause": "database",
+    "expected_services": ["metadata", "etl"]
+  },
+  {
+    "query_id": "Q002",
+    "query": "ETL job failure data pipeline blocked",
+    "expected_root_cause": "etl",
+    "expected_services": ["analytics", "reporting"]
+  },
+  {
+    "query_id": "Q003",
+    "query": "metadata service connection error",
+    "expected_root_cause": "metadata",
+    "expected_services": ["etl", "analytics"]
+  },
+  {
+    "query_id": "Q004",
+    "query": "analytics service crash reporting unavailable",
+    "expected_root_cause": "analytics",
+    "expected_services": ["reporting"]
+  },
+  {
+    "query_id": "Q005",
+    "query": "database slow query high retry rate",
+    "expected_root_cause": "database",
+    "expected_services": ["metadata", "etl", "analytics", "reporting"]
+  },
+  {
+    "query_id": "Q006",
+    "query": "ETL memory leak pipeline stalled",
+    "expected_root_cause": "etl",
+    "expected_services": ["analytics"]
+  },
+  {
+    "query_id": "Q007",
+    "query": "metadata schema mismatch data quality issue",
+    "expected_root_cause": "metadata",
+    "expected_services": ["etl"]
+  },
+  {
+    "query_id": "Q008",
+    "query": "reporting dashboard failure analytics down",
+    "expected_root_cause": "reporting",
+    "expected_services": []
+  },
+  {
+    "query_id": "Q009",
+    "query": "database connection pool exhausted cascade",
+    "expected_root_cause": "database",
+    "expected_services": ["metadata", "etl"]
+  },
+  {
+    "query_id": "Q010",
+    "query": "ETL job timeout Kafka consumer lag",
+    "expected_root_cause": "etl",
+    "expected_services": ["analytics", "reporting"]
+  }
+]

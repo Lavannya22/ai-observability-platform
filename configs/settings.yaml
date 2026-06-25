@@ -52,3 +52,14 @@ postgres:
 incident:
   timeout_seconds: 600
   merge_window_minutes: 10
+
+opensearch:
+  host: localhost
+  port: 9200
+  index: incidents
+  embedding_dim: 384
+  top_k: 5
+
+rag:
+  model: claude-haiku-4-5-20251001
+  max_tokens: 512

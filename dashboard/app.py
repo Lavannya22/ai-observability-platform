@@ -72,10 +72,11 @@ st.title("AI Observability Platform")
 st.caption("Phase 1 + Phase 2 + Phase 3 + Phase 4")
 
 scenarios = load_scenarios()
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
     "Deterministic Analysis (Phase 1)",
     "Live Incidents (Phase 2)",
     "ML Evaluation (Phase 3 + 4)",
+    "AI Assistant (Phase 5)",
 ])
 
 
@@ -424,3 +425,184 @@ with tab3:
                     ]),
                     use_container_width=True, hide_index=True,
                 )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 4 — Phase 5: AI Assistant (RAG)
+# ═══════════════════════════════════════════════════════════════════════════════
+with tab4:
+    st.subheader("AI Incident Investigation Assistant")
+    st.caption(
+        "Ask natural-language questions about any incident. "
+        "Answers are grounded in incident evidence, propagation path, "
+        "and similar historical incidents retrieved from OpenSearch."
+    )
+
+    # Check dependencies
+    rag_ready = True
+    try:
+        from rag.answer_generator import generate_answer as _generate_answer
+        from rag.grounding_validator import validate as _validate
+    except ImportError:
+        st.error("RAG components not available. Run `pip install anthropic`.")
+        rag_ready = False
+
+    opensearch_ready = True
+    retrieved_incidents_cache = []
+    try:
+        from search.vector_search import search as _vector_search
+    except ImportError:
+        opensearch_ready = False
+
+    if rag_ready:
+        repo5 = try_storage()
+        if repo5 is None:
+            st.error("PostgreSQL not available — cannot load incidents.")
+        else:
+            try:
+                all_inc = repo5.get_all_incidents()
+                if not all_inc:
+                    st.info(
+                        "No incidents in the database yet. "
+                        "Run the producer and consumer to generate incidents."
+                    )
+                else:
+                    ctrl_col5, main_col5 = st.columns([1, 2])
+
+                    with ctrl_col5:
+                        st.markdown("### Select Incident")
+                        inc_options = {
+                            i["incident_id"]: (
+                                f"{i['incident_id']} — "
+                                f"{i['status']} | "
+                                f"root: {i['root_cause'] or 'detecting...'}"
+                            )
+                            for i in all_inc
+                        }
+                        selected_iid = st.selectbox(
+                            "Incident",
+                            options=list(inc_options.keys()),
+                            format_func=lambda k: inc_options[k],
+                            key="p5_incident",
+                        )
+                        selected_incident = next(
+                            i for i in all_inc if i["incident_id"] == selected_iid
+                        )
+
+                        st.markdown("**Incident Summary**")
+                        st.markdown(f"- **Root Cause:** `{selected_incident['root_cause'] or 'TBD'}`")
+                        st.markdown(
+                            f"- **Affected:** "
+                            f"{', '.join(selected_incident['affected_services']) or 'TBD'}"
+                        )
+                        propagation5 = selected_incident.get("propagation_path") or []
+                        if propagation5:
+                            st.markdown(f"- **Propagation:** `{' -> '.join(propagation5)}`")
+
+                        if not opensearch_ready:
+                            st.warning(
+                                "OpenSearch not available — vector search disabled. "
+                                "Answers will use incident data only."
+                            )
+
+                    with main_col5:
+                        st.markdown("### Ask a Question")
+
+                        suggested = [
+                            "Why did this incident occur?",
+                            f"Why did {selected_incident.get('affected_services', ['the service'])[0] if selected_incident.get('affected_services') else 'the service'} fail?",
+                            "What is the failure propagation path?",
+                            "Have we seen this type of incident before?",
+                            "What action should I take to resolve this?",
+                        ]
+                        question = st.text_input(
+                            "Question",
+                            placeholder="e.g. Why did reporting fail?",
+                            key="p5_question",
+                        )
+                        st.caption("Suggested: " + " | ".join(f"*{s}*" for s in suggested[:3]))
+
+                        ask_clicked = st.button(
+                            "Ask", type="primary", use_container_width=False, key="p5_ask"
+                        )
+
+                        if "p5_result" not in st.session_state:
+                            st.session_state.p5_result = None
+
+                        if ask_clicked and question.strip():
+                            with st.spinner("Retrieving similar incidents and generating answer..."):
+                                retrieved5 = []
+                                if opensearch_ready:
+                                    try:
+                                        query_text = (
+                                            f"{question} "
+                                            f"{selected_incident.get('root_cause', '')} "
+                                            f"{' '.join(selected_incident.get('affected_services', []))}"
+                                        )
+                                        retrieved5 = _vector_search(query_text, top_k=5)
+                                    except Exception as e:
+                                        st.warning(f"OpenSearch unavailable: {e}")
+
+                                result5 = _generate_answer(
+                                    question, selected_incident, retrieved5
+                                )
+                                st.session_state.p5_result = result5
+                                st.session_state.p5_retrieved = retrieved5
+
+                        if st.session_state.p5_result:
+                            r5 = st.session_state.p5_result
+                            retrieved5 = st.session_state.get("p5_retrieved", [])
+
+                            st.divider()
+
+                            # Answer
+                            st.markdown("#### Answer")
+                            st.markdown(r5["answer"])
+
+                            # Grounding badge
+                            grounding = r5["grounding"]
+                            rate = grounding["hallucination_rate"]
+                            if grounding["grounded"]:
+                                st.success(
+                                    f"Fully grounded — hallucination rate: {rate:.0%}"
+                                )
+                            else:
+                                st.warning(
+                                    f"Hallucination rate: {rate:.0%} | "
+                                    f"{len(grounding['unsupported_claims'])} unsupported claim(s)"
+                                )
+
+                            llm_label = "claude-haiku-4-5" if r5.get("llm_used") else "rule-based fallback"
+                            st.caption(f"Generated by: {llm_label}")
+
+                            # Sources
+                            if r5["sources"]:
+                                st.markdown(
+                                    "**Sources:** " + ", ".join(f"`{s}`" for s in r5["sources"])
+                                )
+
+                            # Similar incidents
+                            if retrieved5:
+                                with st.expander(f"Similar Historical Incidents ({len(retrieved5)})"):
+                                    st.dataframe(
+                                        pd.DataFrame([
+                                            {
+                                                "Incident ID": inc.get("incident_id", "?"),
+                                                "Root Cause": inc.get("root_cause", "?"),
+                                                "Affected": ", ".join(inc.get("affected_services") or []),
+                                                "Summary": (inc.get("summary") or "")[:80],
+                                                "Score": round(inc.get("_score", 0), 4),
+                                            }
+                                            for inc in retrieved5
+                                        ]),
+                                        use_container_width=True, hide_index=True,
+                                    )
+
+                            # Grounding detail
+                            if not grounding["grounded"] and grounding["unsupported_claims"]:
+                                with st.expander("Unsupported Claims (hallucination detail)"):
+                                    for claim in grounding["unsupported_claims"]:
+                                        st.markdown(f"- {claim}")
+
+            except Exception as e:
+                st.error(f"Cannot connect to PostgreSQL: {e}")
