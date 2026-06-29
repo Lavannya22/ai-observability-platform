@@ -1,0 +1,21 @@
+{
+  "scenarios_run": 20,
+  "total_logs": 3050,
+  "throughput_logs_per_minute": 54461,
+  "detection": {
+    "p50_seconds": 0.0028,
+    "p95_seconds": 0.0036,
+    "target_p95_seconds": 5.0,
+    "passed": true
+  },
+  "rca": {
+    "p50_seconds": 0.0712,
+    "p95_seconds": 0.2123
+  },
+  "retrieval": {
+    "p50_seconds": 0.0001,
+    "p95_seconds": 0.0007,
+    "target_p95_seconds": 3.0,
+    "passed": true
+  }
+}

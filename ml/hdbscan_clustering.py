@@ -35,6 +35,39 @@ def cluster(
     return labels, embeddings
 
 
+def cluster_logs(logs: list[dict], min_cluster_size: int = 3, min_samples: int = 2) -> list[dict]:
+    """
+    Production cluster_logs() using HDBSCAN + Sentence Transformer embeddings.
+
+    Drop-in replacement for rca.clustering.cluster_logs().
+    Uses smaller min_cluster_size defaults than the evaluation version
+    to handle the smaller per-incident log volumes seen in streaming.
+    """
+    error_logs = [log for log in logs if log.get("level") == "ERROR"]
+    if not error_logs:
+        return []
+
+    messages = [log["message"] for log in error_logs]
+    labels, _ = cluster(messages, min_cluster_size=min_cluster_size, min_samples=min_samples)
+
+    clusters: dict[int, list] = {}
+    for log, label in zip(error_logs, labels.tolist()):
+        clusters.setdefault(label, []).append(log)
+
+    result = []
+    for cid, members in sorted(clusters.items()):
+        services = list({m["service"] for m in members})
+        result.append({
+            "cluster_id": cid,
+            "size": len(members),
+            "services": services,
+            "logs": members,
+            "summary": members[0]["message"],
+        })
+
+    return result
+
+
 def evaluate_hdbscan(
     true_labels: list[str],
     pred_labels: np.ndarray,

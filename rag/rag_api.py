@@ -64,7 +64,63 @@ def ask_freeform(req: FreeformRequest):
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    status = {
+        "postgres_connected": False,
+        "opensearch_connected": False,
+        "kafka_connected": False,
+        "last_incident_indexed": None,
+    }
+
+    # PostgreSQL
+    try:
+        from storage.postgres import get_connection
+        conn = get_connection()
+        conn.close()
+        status["postgres_connected"] = True
+    except Exception as e:
+        status["postgres_error"] = str(e)
+
+    # OpenSearch
+    try:
+        from search.opensearch_client import get_client
+        client = get_client()
+        info = client.info()
+        status["opensearch_connected"] = True
+        status["opensearch_version"] = info["version"]["number"]
+
+        # Last indexed incident
+        resp = client.search(
+            index="incidents",
+            body={
+                "size": 1,
+                "sort": [{"created_at": {"order": "desc"}}],
+                "_source": ["incident_id", "created_at"],
+            },
+        )
+        hits = resp["hits"]["hits"]
+        if hits:
+            status["last_incident_indexed"] = hits[0]["_source"].get("created_at")
+    except Exception as e:
+        status["opensearch_error"] = str(e)
+
+    # Kafka (lightweight check via metadata fetch)
+    try:
+        import yaml
+        from pathlib import Path
+        from confluent_kafka import Producer
+        cfg_path = Path(__file__).parent.parent / "configs" / "settings.yaml"
+        with open(cfg_path) as f:
+            cfg = yaml.safe_load(f)["kafka"]
+        p = Producer({"bootstrap.servers": cfg["bootstrap_servers"],
+                      "socket.timeout.ms": 2000})
+        meta = p.list_topics(timeout=2)
+        status["kafka_connected"] = meta is not None
+    except Exception as e:
+        status["kafka_error"] = str(e)
+
+    all_ok = status["postgres_connected"] and status["opensearch_connected"]
+    status["status"] = "ok" if all_ok else "degraded"
+    return status
 
 
 def _build_search_query(question: str, incident: dict) -> str:

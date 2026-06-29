@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from storage.postgres import create_tables
 from storage import repository
 from rca.dependency_graph import build_graph
-from rca.clustering import cluster_logs
+from ml.hdbscan_clustering import cluster_logs   # Phase 6: promoted from greedy TF-IDF
 from rca.engine import rank_root_causes
 from rca.explainer import explain_incident
 from rca.evidence import generate_evidence
